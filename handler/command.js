@@ -26,11 +26,8 @@ module.exports = (client) => {
 
 			}
 
-			if(pull.aliases && Array.isArray(pull.aliases)) {
-
+			if(pull.aliases && Array.isArray(pull))
 				pull.aliases.forEach(alias => client.aliases.set(alias, pull.name))
-
-			}
 
 		}
 

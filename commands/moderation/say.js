@@ -16,7 +16,7 @@ module.exports = {
 
 		if(args[0].toLowerCase() === "embed") {
 
-			const embed = new RichEmbed()
+			const embed = new MessageEmbed()
 				.setColor(roleColor)
 				.setDescription(args.slice(1).join(" "))
 				.setTimestamp()

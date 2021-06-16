@@ -1,7 +1,10 @@
 const Discord = require("discord.js");
 const fs = require("fs");
 
-const client = new Discord.Client();
+const client = new Discord.Client({
+	disableEveryone: true
+});
+
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 
@@ -15,21 +18,13 @@ client.aliases = new Discord.Collection();
 // Setup Config File
 const {prefix, token, bot_info} = require("./config.json");
 
-client.once("ready", () => {
+client.on("ready", () => {
 
 	console.log("Ready!");
 	console.log("Prefix is " + prefix);
 	console.log("Name: " + bot_info.name);
 	console.log("Version: " + bot_info.version);
 
-	client.user.setPresence({
-
-		status: "online",
-		game: {
-			name: "Being Developed!",
-			type: "WATCHING"
-		}
-	});
 });
 
 // Login
