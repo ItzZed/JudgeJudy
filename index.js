@@ -7,7 +7,7 @@ client.aliases = new Discord.Collection();
 
 // Setup Command Files
 //const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-["command"].forEach(handle =>{
+["command"].forEach(handler =>{
 	require(`./handler/${handler}`)(client);
 });
 
@@ -32,23 +32,11 @@ client.once("ready", () => {
 	});
 });
 
+// Login
 client.login(token);
 
-// Error Handler
-function catchErr(err, message) {
 
-	client.users.cache.get("222837998641872899").send("There was an error at channel: " + message.channel + " in guild " + message.guild);
-	client.users.cache.get("222837998641872899").send("ERROR ```" + err + "```");
-}
-
-for(const file of commandFiles) {
-
-	const command = require(`./commands/${file}`);
-	client.commands.set(command.name, command);
-
-}
-
-client.on("message", message => {
+client.on("message", async message => {
 
 	/*if(message.content === `${prefix}name`) {
 
@@ -67,35 +55,37 @@ client.on("message", message => {
 
 	}*/
 
-	// If The Message Does Not Start With OR Not From A Bot, Return.
+	// If The Message Does Not Start With Prefix OR Not From A Bot, Return.
 	if(!message.content.startsWith(prefix) || message.author.bot) return;
+
 	// Argument Handler
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
-	const commandName = args.shift().toLowerCase();
+	const cmd = args.shift().toLowerCase();
+
+	// Check If Command Given
+	if(cmd.length === 0) return;
+
+
+	let command = client.commands.get(cmd);
 
 	// Check If Command Exists
-	if(!client.commands.has(commandName)) {
+	if(!command) {
+
+		command= client.commands.get(client.aliases.get(cmd))
 
 		return message.channel.send(`Unknown Command!`);
 
 	}
 
-	const command = client.commands.get(commandName);
 
-	if (!args.length) {
-
-		return message.channel.send(`You have not input any arguments, ${message.author}~`);
-
-	}
 
 	try {
 
-		command.execute(message, args);
+		command.run(client, message, args);
 
 	}
 	catch(error) {
 
-		catchErr();
 		console.error(error);
 		message.reply("There was an issue executing that command!");
 
