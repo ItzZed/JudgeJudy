@@ -20,9 +20,9 @@ module.exports = {
 				.setColor(roleColor)
 				.setDescription(args.slice(1).join(" "))
 				.setTimestamp()
-				.setImage(client.user.displayAvatarURL)
+				.setImage(client.user.displayAvatarURL())
 				.setAuthor(message.author.name, message.author.displayAvatarURL())
-				.setFooter(client.user.username, client .user.displayAvatarURL)
+				.setFooter(client.user.username, client .user.displayAvatarURL())
 
 			message.channel.send(embed);
 
