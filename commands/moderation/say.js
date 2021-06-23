@@ -10,7 +10,7 @@ module.exports = {
 		if(message.deletable) message.delete();
 
 		if(args.length < 1)
-			return message.reply("Nothing to Say?").then(m => m.delete(5000));
+			return message.reply("Nothing to Say?").then(m => m.delete({ timeout: 5000 }));
 
 		const roleColor = message.guild.me.displayHexColor === "#000000" ? "#ffffff" : message.guild.me.displayHexColor;
 
