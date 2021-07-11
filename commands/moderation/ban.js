@@ -4,9 +4,9 @@ const { promptMessage } = require("../../functions.js");
 
 module.exports = {
 
-	name: "kick",
+	name: "ban",
 	category: "moderation",
-	description: "Kicks the member",
+	description: "Bans the member",
 	usage: "<id | mention>",
 	run: async (client, message, args) =>  {
 
@@ -19,8 +19,8 @@ module.exports = {
 		// No Mention ¯\_(ツ)_/¯
 		if(!args[0]) {
 
-			// Reply's kick command without mention and then deletes message after timeToDeleteMessage
-			return message.reply("Please provide a person to kick")
+			// Reply's ban command without mention and then deletes message after timeToDeleteMessage
+			return message.reply("Please provide a person to ban")
 				.then(m => m.delete({ timeout: timeToDeleteMessage }));
 
 		}
@@ -28,67 +28,67 @@ module.exports = {
 		// No Reason  ¯\_(ツ)_/¯
 		if(!args[1]) {
 
-			// Reply's kick command without reason and then deletes message.
-			return message.reply("Please provide a reason to kick")
+			// Reply's ban command without reason and then deletes message.
+			return message.reply("Please provide a reason to ban")
 				.then(m => m.delete({ timeout: timeToDeleteMessage }));
 
 		}
 
-		// No Kick/Author Perms XD  (nice try bud)
-		if(!message.member.hasPermission("KICK_MEMBERS")) {
+		// No Ban/Author Perms XD  (nice try bud)
+		if(!message.member.hasPermission("BAN_MEMBERS")) {
 
-			return message.reply("❌ You Do Not Have The Permission To Kick Members!")
+			return message.reply("❌ You Do Not Have The Permission To Ban Members!")
 				.then(m => m.delete({ timeout: timeToDeleteMessage }));
 
 		}
 
 		// No Bot Perms (bruh why would you mod bot without giving it perms xD)
-		if(!message.guild.me.hasPermission("KICK_MEMBERS")) {
+		if(!message.guild.me.hasPermission("BAN_MEMBERS")) {
 
-			return message.reply("❌ I Do Not Have The Permissions To Kick Members!")
+			return message.reply("❌ I Do Not Have The Permissions To Ban Members!")
 				.then(m => m.delete({ timeout: timeToDeleteMessage }));
 
 		}
 
-		const toKick = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+		const toBan = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
 		// No Member Found 😑
-		if(!toKick) {
+		if(!toBan) {
 
 			return message.reply("Couldn't Find That Member, Try Again!")
 				.then(m => m.delete({ timeout: timeToDeleteMessage }));
 
 		}
 
-		// Why Do You Wanna Kick Yourself?
-		if(message.author.id === toKick.id) {
+		// Why Do You Wanna Ban Yourself?
+		if(message.author.id === toBan.id) {
 
-			return message.reply("You Can't Kick Yourself... why are you trying to kick yourself?")
+			return message.reply("You Can't Ban Yourself... why are you trying to ban yourself?")
 				.then(m => m.delete({ timeout: timeToDeleteMessage }));
 
 		}
 
-		// Can I Even Kick Them?
-		if(!toKick.kickable) {
+		// Can I Even Ban Them?
+		if(!toBan.bannable) {
 
-			return message.reply("I cannot kick the member, most likely due to the role hierarchy")
+			return message.reply("I cannot ban the member, most likely due to the role hierarchy")
 				.then(m => m.delete({ timeout: timeToDeleteMessage }));
 
 		}
 
 		const embed = new MessageEmbed()
 			.setColor("#ff0000")
-			.setThumbnail(toKick.user.displayAvatarURL())
+			.setThumbnail(toBan.user.displayAvatarURL())
 			.setFooter(message.member.displayName, message.author.displayAvatarURL())
 			.setTimestamp()
-			.setDescription(stripIndents`**> Kicked Member:** ${toKick} (${toKick.id})
-			**> Kicked By:** ${message.author} (${message.author.id})
+			.setDescription(stripIndents`**> Banned Member:** ${toBan} (${toBan.id})
+			**> Banned By:** ${message.author} (${message.author.id})
 			**> Reason:** ${args.slice(1).join(" ")}`);
 
 		const promptEmbed = new MessageEmbed()
 			.setColor("GREEN")
 			.setAuthor("This Verification Becomes Invalid After 30s")
-			.setDescription(`Do you want to kick ${toKick}`);
+			.setDescription(`Do you want to ban ${toBan}`);
 
 		message.channel.send(promptEmbed).then(async msg => {
 
@@ -98,7 +98,7 @@ module.exports = {
 
 				await msg.delete();
 
-				toKick.kick(args.slice(1).join(" "))
+				toBan.ban({reason: args.slice(1).join(" ")})
 					.catch(err => {
 						if(err) return message.channel.send(`Well... somethings wrong!`);
 					});
@@ -109,7 +109,7 @@ module.exports = {
 
 				await msg.delete();
 
-				message.reply("Kick Canceled!")
+				message.reply("Ban Canceled!")
 					.then(m => m.delete({ timeout: timeToDeleteMessage }));
 
 			}
